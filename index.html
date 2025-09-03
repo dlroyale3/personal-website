@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dumitru Luca | Portfolio & AI Interactive Profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Portfolio of Dumitru (Nicolae-Luca) – CS student, creator of YouTubeTranscriptGen.com, AI & systems projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="pictures/pfp-2.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="style/site.css" />
+</head>
+<body>
+  <header class="navbar" role="banner">
+    <div class="navbar-left">
+      <a class="nav-logo" href="#home" aria-label="Homepage">
+        <img src="pictures/pfp-2.jpg" alt="Luca's Profile" class="nav-avatar"/>
+        <span>Luca</span>
+      </a>
+    </div>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+    <nav id="primary-navigation" class="nav-links" aria-label="Main Navigation">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#ai">AI Assistant</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" hidden></div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1>I'm Luca.</h1>
+        <p class="lead" style="max-width:460px">I design & build lean AI products that compress time to insight. </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#ai">Ask the AI about me</a>
+          <a class="btn btn-outline" href="#projects">View Projects ↓</a>
+        </div>
+      </div>
+      <div class="hero-portrait">
+        <picture>
+          <source srcset="pictures/personal-image-3.jpeg" media="(min-width:800px)"/>
+          <img src="pictures/personal-image-3.jpeg" alt="Portrait of Luca" loading="lazy" />
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section alt">
+    <div class="section-inner about-grid">
+      <div class="about-block">
+        <h2>Know About Me</h2>
+        <p class="sec-lead" style="margin-top:0">Third‑year Computer Science (CTI) student in Bucharest. I like turning messy information flows into fast, productized experiences. I value rigor, latency awareness, and pragmatic architecture over hype. Aviation training shaped a calm, procedural debugging style.</p>
+        <p style="max-width:840px">Core interests: retrieval‑augmented systems, streaming LLM UX, backend efficiency, and building assistants that actually reduce cognitive overhead. I enjoy bridging low‑level understanding (protocols, memory, networking) with product intuition.</p>
+      </div>
+      <div class="about-block skills-block">
+        <h2>Skills</h2>
+        <div class="skills-list">
+          <div class="skill-group"><h3>Backend & Infra</h3><p>Python (Flask), streaming APIs (SSE), Redis, SQLite (WAL, indices), async patterns, structured logging, Stripe integration.</p></div>
+          <div class="skill-group"><h3>AI / LLM</h3><p>Prompt design, cost vs quality tradeoffs, context packing, retrieval augmentation pipeline design, evaluation mindset.</p></div>
+          <div class="skill-group"><h3>Frontend</h3><p>Vanilla JS architecture, streaming token UX, accessible responsive layouts, markdown rendering, minimal state surfaces.</p></div>
+          <div class="skill-group"><h3>Systems & Networking</h3><p>C fundamentals, packet parsing, ARP / ICMP, LPM routing, failure reasoning, performance awareness.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section alt">
+    <div class="section-inner">
+      <h2>Projects</h2>
+      <p class="sec-lead">Three representative builds—each targets friction: speed to insight, structured retrieval, or deep protocol grounding.</p>
+      <div class="projects-vertical">
+        <article class="project-card expandable" id="proj-ytg" data-collapsed="true">
+          <header><h3>YouTubeTranscriptGen.com <span class="badge-live">LIVE</span></h3></header>
+          <p class="project-summary">Production web app providing full, multi‑language YouTube transcripts with a streaming AI assistant for question answering & summarization. Emphasis on resilience and UX speed.</p>
+          <ul class="project-points">
+            <li>Transcript extraction + language switching (cached, fallback tolerant)</li>
+            <li>Streaming AI chat (incremental markdown, scroll anchoring)</li>
+            <li>Exports: TXT / SRT / VTT / JSON; ratings + credit economy</li>
+            <li>Proxy rotation & warm path logic to mitigate rate / geo constraints</li>
+            <li>Stripe billing + structured data SEO + persisted conversations</li>
+          </ul>
+          <div class="project-extra">
+            <p><strong>Tech focus:</strong> Efficient transcript retrieval pipeline, resilient network layer with rotating proxies, incremental SSE rendering for near real‑time UX, token cost control strategies.</p>
+            <p><strong>Challenges solved:</strong> Handling regional blocking, balancing model latency vs quality, preventing scroll jank during long streaming outputs.</p>
+            <p><strong>Impact:</strong> Enables users to extract and query long-form video knowledge in seconds instead of manually scrubbing hours of content.</p>
+          </div>
+          <div class="project-actions">
+            <a href="https://youtubetranscriptgen.com" target="_blank" rel="noopener" class="visit-btn">Visit Project ↗</a>
+            <button class="toggle-more-btn" type="button" aria-expanded="false">More Details</button>
+          </div>
+        </article>
+        <article class="project-card expandable" id="proj-rag" data-collapsed="true">
+          <header><h3>Retrieval‑Augmented QA Prototype</h3></header>
+          <p class="project-summary">Experimental pipeline for answering domain questions over large text corpora (e.g. legal). Focus on retrieval relevance & latency budget control.</p>
+          <ul class="project-points">
+            <li>Document chunking + embedding & vector store indexing</li>
+            <li>Hybrid similarity retrieval + context window packing heuristics</li>
+            <li>Deterministic assembly layer feeding generation model</li>
+            <li>Instrumentation for recall / precision & token efficiency</li>
+          </ul>
+          <div class="project-extra">
+            <p><strong>Approach:</strong> Hybrid scoring (semantic + term features), rank truncation, adaptive window packing based on token budget.</p>
+            <p><strong>Evaluation:</strong> Early harness for manual relevance judgments + recall tracking across query set.</p>
+            <p><strong>Next:</strong> Add multi‑vector representation and shallow re‑rank pass.</p>
+          </div>
+          <div class="project-actions">
+            <button class="toggle-more-btn" type="button" aria-expanded="false">More Details</button>
+          </div>
+        </article>
+        <article class="project-card expandable" id="proj-router" data-collapsed="true">
+          <header><h3>Router Data Plane Simulator (C)</h3></header>
+          <p class="project-summary">Low‑level packet processing path built over Mininet to internalize protocol behavior & failure modes.</p>
+          <ul class="project-points">
+            <li>Ethernet frame parsing, ARP cache + pending queue</li>
+            <li>IPv4 TTL decrement & checksum recomputation</li>
+            <li>Longest Prefix Match routing decisions</li>
+            <li>ICMP: unreachable, time exceeded, echo reply logic</li>
+          </ul>
+          <div class="project-extra">
+            <p><strong>Focus:</strong> Reinforce deterministic packet path reasoning, timing of ARP resolution vs queued packets, and correctness of checksum updates.</p>
+            <p><strong>Learning:</strong> Deepened understanding of failure surfaces (ARP exhaustion, TTL expirations) & diagnostics flows (ICMP signalling).</p>
+            <p><strong>Outcome:</strong> Better intuition for latency sources and error propagation across network layers.</p>
+          </div>
+            <div class="project-actions">
+              <a href="https://github.com/dlroyale3/router" target="_blank" rel="noopener" class="visit-btn">Visit Project ↗</a>
+              <button class="toggle-more-btn" type="button" aria-expanded="false">More Details</button>
+            </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="ai" class="chat-section alt-bg">
+    <div class="chat-single-container">
+      <div class="chat-panel">
+        <div class="chat-header">
+          <h3>AI Assistant About Me</h3>
+          <button class="clear-chat-btn" type="button" title="Clear chat" aria-label="Clear chat">Clear</button>
+        </div>
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+          <div class="chat-input-area">
+            <div class="chat-input-container">
+              <textarea id="chat-input" placeholder="Ask me anything about Luca..." rows="1" spellcheck="true"></textarea>
+              <button id="send-button" class="send-button" type="button" title="Send message" aria-label="Send message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section dark">
+    <div class="section-inner contact-inner">
+      <h2>Contact</h2>
+      <p class="sec-lead">Reach out for collaboration, internships, or technical discussion.</p>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <h3>Email</h3>
+          <p><a href="mailto:dumluca4@gmail.com">dumluca4@gmail.com</a> <button class="copy-btn" data-copy="dumluca4@gmail.com" data-type="email" title="Copy email" aria-label="Copy email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button></p>
+        </div>
+        <div class="contact-item">
+          <h3>GitHub</h3>
+          <p><a href="https://github.com/dlroyale3" target="_blank" rel="noopener">github.com/dlroyale3</a></p>
+        </div>
+        <div class="contact-item">
+          <h3>Phone</h3>
+          <p><a href="#" class="copy-phone" data-phone="+40 723 088 497">+40 723 088 497</a> <button class="copy-btn" data-copy="+40 723 088 497" data-type="phone" title="Copy phone" aria-label="Copy phone">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>Luca</h3>
+        <p class="footer-meta">Contact: <a href="mailto:dumluca4@gmail.com" style="color:#fff;">dumluca4@gmail.com</a> · <a href="https://github.com/dlroyale3" target="_blank" rel="noopener" style="color:#fff;">GitHub</a> · <a href="https://youtubetranscriptgen.com/" target="_blank" rel="noopener" style="color:#fff;">YouTubeTranscriptGen</a></p>
+        <p class="footer-meta">© 2025 Luca. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="scripts/chat.js" defer></script>
+  <script src="scripts/site.js" defer></script>
+  <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+  <div id="focus-lock-anchor" tabindex="-1" aria-hidden="true"></div>
+</body>
+</html>
