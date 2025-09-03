@@ -5,8 +5,9 @@ function resolveEndpoint(){ const p=new URLSearchParams(window.location.search);
 let conversationHistory = []; // in-memory only
 let currentResponseId = null;
 let isSending = false;
-let autoScrollEnabled = true; // disabled when user scrolls up
+let autoScrollEnabled = true; // stays true while streaming unless user manually scrolls up
 let streamingActive = false;
+let lastUserScrollIntent = 0; // timestamp of last user-initiated scroll gesture
 
 function qs(sel){ return document.querySelector(sel); }
 function atBottom(el, thresh=10){ if(!el) return true; return (el.scrollHeight - el.scrollTop - el.clientHeight) <= thresh; }
@@ -68,6 +69,47 @@ async function sendMessage(){
   finally { isSending=false; ta.disabled=false; resizeAndCenter(); ta.focus(); }
 }
 
-function initChat(){ const ta=qs('#chat-input'); const send=qs('#send-button'); const msgs=qs('#chat-messages'); if(!ta||!send||!msgs) return; const starter = "Hi! I'm Luca's AI assistant. I can answer questions about his background, projects, skills, and interests. Ask anything."; addMessageToDOM('ai', starter); conversationHistory.push({role:'assistant', content:starter}); msgs.addEventListener('scroll', ()=>{ const wasAuto=autoScrollEnabled; autoScrollEnabled = atBottom(msgs); if(streamingActive && autoScrollEnabled && !wasAuto){ msgs.scrollTop = msgs.scrollHeight; } }); ['input','paste','cut','keyup','change'].forEach(ev=> ta.addEventListener(ev, resizeAndCenter)); ta.addEventListener('keydown', e=>{ if(e.key==='Enter'){ if(e.shiftKey){ return; } e.preventDefault(); sendMessage(); }}); send.addEventListener('click', sendMessage); const clear=document.querySelector('.clear-chat-btn'); if(clear) clear.addEventListener('click', ()=>{ if(isSending) return; const intro=conversationHistory.find(m=>m.role==='assistant'); conversationHistory = intro? [intro]:[]; currentResponseId=null; msgs.innerHTML=''; if(intro) addMessageToDOM('ai', intro.content); }); resizeAndCenter(); }
+function initChat(){
+  const ta=qs('#chat-input'); const send=qs('#send-button'); const msgs=qs('#chat-messages');
+  if(!ta||!send||!msgs) return;
+  const starter = "Hi! I'm Luca's AI assistant. I can answer questions about his background, projects, skills, and interests. Ask anything.";
+  addMessageToDOM('ai', starter);
+  conversationHistory.push({role:'assistant', content:starter});
+
+  // Track explicit user intent to scroll (mouse, touch, pointer). Only then disable autoscroll.
+  const markUserIntent = ()=> { lastUserScrollIntent = Date.now(); };
+  ['wheel','touchstart','pointerdown','mousedown','keydown'].forEach(ev=>{
+    msgs.addEventListener(ev, (e)=>{
+      // keydown: only if PageUp/PageDown/ArrowUp/ArrowDown/Home/End
+      if(ev==='keydown'){
+        const k = e.key;
+        if(!['PageUp','PageDown','ArrowUp','ArrowDown','Home','End','Space'].includes(k)) return;
+      }
+      markUserIntent();
+    }, { passive:true });
+  });
+
+  msgs.addEventListener('scroll', ()=>{
+    const atBot = atBottom(msgs);
+    if(atBot){
+      autoScrollEnabled = true;
+    } else {
+      // Only disable if a user gesture happened recently (intent window 1500ms)
+      if(Date.now() - lastUserScrollIntent < 1500){
+        autoScrollEnabled = false;
+      } // else keep previous state (likely content growth) so autoscroll continues
+    }
+    if(streamingActive && autoScrollEnabled){ msgs.scrollTop = msgs.scrollHeight; }
+  });
+
+  ['input','paste','cut','keyup','change'].forEach(ev=> ta.addEventListener(ev, resizeAndCenter));
+  ta.addEventListener('keydown', e=>{ if(e.key==='Enter'){ if(e.shiftKey){ return; } e.preventDefault(); sendMessage(); }});
+  send.addEventListener('click', sendMessage);
+
+  const clear=document.querySelector('.clear-chat-btn');
+  if(clear) clear.addEventListener('click', ()=>{ if(isSending) return; const intro=conversationHistory.find(m=>m.role==='assistant'); conversationHistory = intro? [intro]:[]; currentResponseId=null; msgs.innerHTML=''; if(intro) addMessageToDOM('ai', intro.content); });
+
+  resizeAndCenter();
+}
 
 document.addEventListener('DOMContentLoaded', initChat);
