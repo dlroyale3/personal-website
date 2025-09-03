@@ -5,9 +5,11 @@ function resolveEndpoint(){ const p=new URLSearchParams(window.location.search);
 let conversationHistory = []; // in-memory only
 let currentResponseId = null;
 let isSending = false;
-let autoScrollEnabled = true; // stays true while streaming unless user manually scrolls up
+let autoScrollEnabled = true; // auto-scroll only when user is at/near bottom (transcript logic)
 let streamingActive = false;
-let lastUserScrollIntent = 0; // timestamp of last user-initiated scroll gesture
+
+// Helper identical to transcript logic
+function isAtBottom(el, threshold = 10){ if(!el) return true; return (el.scrollHeight - el.scrollTop - el.clientHeight) <= threshold; }
 
 function qs(sel){ return document.querySelector(sel); }
 function atBottom(el, thresh=10){ if(!el) return true; return (el.scrollHeight - el.scrollTop - el.clientHeight) <= thresh; }
@@ -49,16 +51,14 @@ async function sendMessage(){
     const endpoint=resolveEndpoint();
     const resp=await fetch(endpoint,{ method:'POST', headers:{'Content-Type':'application/json','Accept':'text/event-stream'}, body:JSON.stringify({ message:text, conversation_history:conversationHistory, previous_response_id: currentResponseId, model_lvl:'ultra' }) });
     if(!resp.ok){ hideTyping(); streamingActive=false; addMessageToDOM('ai', resp.status===405? '405 Method Not Allowed (production endpoint not yet deployed).':'Error: '+resp.status); return; }
-    const reader=resp.body.getReader(); const decoder=new TextDecoder(); let aiBubble=null; let buffer=''; let started=false; let lastScrollAdjust=0;
+  const reader=resp.body.getReader(); const decoder=new TextDecoder(); let aiBubble=null; let buffer=''; let started=false;
     while(true){
       const {done,value}=await reader.read(); if(done) break;
       const chunk=decoder.decode(value);
       if(chunk.startsWith('__RESPONSE_ID__:')){ currentResponseId = chunk.split(':')[1].trim(); continue; }
       if(!started && chunk.trim()){ hideTyping(); aiBubble = addMessageToDOM('ai',''); started=true; }
       if(aiBubble){ buffer += chunk; try { aiBubble.innerHTML = window.marked ? marked.parse(buffer) : buffer; } catch { aiBubble.textContent = buffer; }
-        // Throttle scroll adjustments for performance
-        const now=performance.now();
-        if(autoScrollEnabled && now - lastScrollAdjust > 30){ container.scrollTop = container.scrollHeight; lastScrollAdjust=now; }
+        if(autoScrollEnabled){ container.scrollTop = container.scrollHeight; }
       }
     }
     hideTyping(); streamingActive=false;
@@ -76,31 +76,9 @@ function initChat(){
   addMessageToDOM('ai', starter);
   conversationHistory.push({role:'assistant', content:starter});
 
-  // Track explicit user intent to scroll (mouse, touch, pointer). Only then disable autoscroll.
-  const markUserIntent = ()=> { lastUserScrollIntent = Date.now(); };
-  ['wheel','touchstart','pointerdown','mousedown','keydown'].forEach(ev=>{
-    msgs.addEventListener(ev, (e)=>{
-      // keydown: only if PageUp/PageDown/ArrowUp/ArrowDown/Home/End
-      if(ev==='keydown'){
-        const k = e.key;
-        if(!['PageUp','PageDown','ArrowUp','ArrowDown','Home','End','Space'].includes(k)) return;
-      }
-      markUserIntent();
-    }, { passive:true });
-  });
-
-  msgs.addEventListener('scroll', ()=>{
-    const atBot = atBottom(msgs);
-    if(atBot){
-      autoScrollEnabled = true;
-    } else {
-      // Only disable if a user gesture happened recently (intent window 1500ms)
-      if(Date.now() - lastUserScrollIntent < 1500){
-        autoScrollEnabled = false;
-      } // else keep previous state (likely content growth) so autoscroll continues
-    }
-    if(streamingActive && autoScrollEnabled){ msgs.scrollTop = msgs.scrollHeight; }
-  });
+  // Transcript-style: autoScrollEnabled reflects if user is at bottom; user scroll up disables until back
+  autoScrollEnabled = isAtBottom(msgs);
+  msgs.addEventListener('scroll', ()=>{ autoScrollEnabled = isAtBottom(msgs); });
 
   ['input','paste','cut','keyup','change'].forEach(ev=> ta.addEventListener(ev, resizeAndCenter));
   ta.addEventListener('keydown', e=>{ if(e.key==='Enter'){ if(e.shiftKey){ return; } e.preventDefault(); sendMessage(); }});
