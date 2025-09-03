@@ -58,18 +58,46 @@
     root.appendChild(el);
     setTimeout(()=>{ el.remove(); }, 3600);
   }
-  document.querySelectorAll('.copy-btn, .copy-phone').forEach(btn=>{
+  // Generic copy buttons (email & phone icon buttons)
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
     btn.addEventListener('click', (e)=>{
       e.preventDefault();
-      const text = btn.getAttribute('data-copy') || btn.getAttribute('data-phone') || btn.textContent.trim();
+      const text = btn.getAttribute('data-copy') || btn.textContent.trim();
       if(!text) return;
-      const type = btn.getAttribute('data-type') || (btn.classList.contains('copy-phone') ? 'phone' : 'email');
-      const message = type === 'phone' ? 'Phone number copied' : 'Email copied';
+      const type = btn.getAttribute('data-type') || 'generic';
+      const message = type === 'phone' ? 'Phone number copied' : (type==='email' ? 'Email copied' : 'Copied');
       navigator.clipboard?.writeText(text).then(()=>{
         showToast(message);
-        if(btn.classList.contains('copy-btn')){ btn.classList.add('copied'); setTimeout(()=>{ btn.classList.remove('copied'); }, 1000); }
-      }).catch(()=>{ showToast('Copy failed'); });
+        btn.classList.add('copied');
+        setTimeout(()=> btn.classList.remove('copied'), 1000);
+      }).catch(()=> showToast('Copy failed'));
     });
+  });
+
+  // Phone anchor: desktop = copy, mobile = open dialer
+  const isMobile = (()=>{
+    const ua = navigator.userAgent || navigator.vendor || '';
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(ua) || window.matchMedia('(pointer:coarse)').matches;
+  })();
+  document.querySelectorAll('.copy-phone').forEach(anchor=>{
+    const raw = anchor.getAttribute('data-phone') || anchor.textContent.trim();
+    if(isMobile){
+      // Prepare tel: link (strip spaces & non digit except +)
+      const telNum = raw.replace(/[^+\d]/g,'');
+      anchor.setAttribute('href', 'tel:'+telNum);
+      // Remove any previous listener logic (in case of hot reload) by cloning
+      const clone = anchor.cloneNode(true);
+      anchor.parentNode.replaceChild(clone, anchor);
+    } else {
+      // Desktop: act as copy (no tel navigation)
+      anchor.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const text = raw;
+        if(!text) return;
+        navigator.clipboard?.writeText(text).then(()=> showToast('Phone number copied'))
+          .catch(()=> showToast('Copy failed'));
+      });
+    }
   });
   // Mobile navigation toggle
   const navToggle = document.querySelector('.nav-toggle');
