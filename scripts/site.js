@@ -65,7 +65,11 @@
       const text = btn.getAttribute('data-copy') || btn.textContent.trim();
       if(!text) return;
       const type = btn.getAttribute('data-type') || 'generic';
-      const message = type === 'phone' ? 'Phone number copied' : (type==='email' ? 'Email copied' : 'Copied');
+      let message;
+      if(type==='phone') message='Phone number copied';
+      else if(type==='email') message='Email copied';
+      else if(type==='linkedin') message='LinkedIn URL copied';
+      else message='Copied';
       navigator.clipboard?.writeText(text).then(()=>{
         showToast(message);
         btn.classList.add('copied');
