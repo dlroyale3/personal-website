@@ -200,10 +200,15 @@ html { scroll-behavior:smooth; }
 .in-view { opacity:1; transform:translateY(0); }
 
 /* Contact */
-.contact-inner { max-width:900px; }
-.contact-inner { max-width:1200px; padding-left:10px; padding-right:10px; }
-.contact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(2275px,1fr)); gap:34px; margin-top:32px; }
-.contact-grid { display:grid; grid-template-columns:repeat(3, minmax(340px,1fr)); gap:32px; margin-top:32px; }
+.contact-inner { max-width:1080px; }
+.contact-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; margin-top:32px; align-items:center; }
+/* Desktop: one row, spacing based on link widths (not card widths) */
+@media (min-width: 1100px){
+  .contact-inner { max-width:1280px; padding-left:48px; padding-right:48px; }
+  .contact-grid { display:flex; flex-wrap:nowrap; align-items:baseline; justify-content:space-between; gap:12px; }
+  .contact-item { flex:0 0 auto; }
+  .contact-item p { white-space: nowrap; }
+}
 .contact-item h3 { margin:0 0 6px; font-size:15px; color:#38bdf8; text-transform:uppercase; letter-spacing:.5px; }
 .contact-item p { margin:0; font-size:15px; }
 .contact-item a { color:#60a5fa; text-decoration:none; }
