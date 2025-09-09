@@ -112,4 +112,20 @@
   navLinksEl?.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeNav));
   window.addEventListener('click', e=>{ if(navLinksEl && navToggle && !navLinksEl.contains(e.target) && !navToggle.contains(e.target)) closeNav(); });
   window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeNav(); });
+
+  // Stable mobile viewport height: set --vh to window.innerHeight * 1% and update on changes
+  function setVH(){
+    // Use innerHeight which excludes URL bar when visible
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+  setVH();
+  // Update on resize and orientation changes; debounce via rAF
+  let vhTick = false;
+  const onResize = () => {
+    if(vhTick) return; vhTick = true;
+    requestAnimationFrame(()=>{ setVH(); vhTick = false; });
+  };
+  window.addEventListener('resize', onResize, { passive: true });
+  window.addEventListener('orientationchange', ()=>{ setTimeout(setVH, 200); }, { passive: true });
 })();

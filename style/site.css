@@ -199,11 +199,11 @@ html::-webkit-scrollbar-thumb:hover { background:linear-gradient(180deg,#1d4ed8 
 
 /* Adjust AI section spacing to ensure panel fits neatly under navbar */
 #ai.chat-section .chat-single-container { padding:46px 24px 70px; }
-@media (max-height:880px){
+@media (min-width: 841px) and (max-height:880px){
   #ai.chat-section .chat-single-container { padding:36px 20px 56px; }
   .chat-panel { height:560px; max-height:560px; }
 }
-@media (max-height:740px){
+@media (min-width: 841px) and (max-height:740px){
   .chat-panel { height:520px; max-height:520px; }
   #ai.chat-section .chat-single-container { padding:30px 16px 50px; }
 }
@@ -325,14 +325,15 @@ html { scroll-behavior:smooth; }
   /* textarea.chat-input { min-height:px; } */
 }
 
-/* Mobile-only: make the AI chat panel taller and fill the viewport better */
+/* Mobile-only: make the AI chat panel taller and stable across browser UI bars */
 @media (max-width: 680px){
   /* Reduce outer padding on the chat area to reclaim space */
   #ai.chat-section .chat-single-container { padding: 20px 14px 24px; }
-  /* Prefer dynamic viewport height where supported; fallback to 100vh */
+  /* Use modern dynamic units with a JS-updated CSS var fallback for iOS/Android */
   .chat-panel {
     max-height: none;
-    height: calc(100vh - 64px - 20px - 24px);
-    height: calc(100dvh - 64px - 20px - 24px - 90px);
+    height: calc(100svh - 64px - 20px - 24px);
+    height: calc(100dvh - 64px - 20px - 24px);
+    height: calc(var(--vh, 1vh) * 100 - 64px - 20px - 24px);
   }
 }
