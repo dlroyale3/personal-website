@@ -18,21 +18,25 @@ function addMessageToDOM(role, content){
   const container = qs('#chat-messages'); if(!container) return null;
   const wrapper = document.createElement('div');
   wrapper.className = role==='user' ? 'user-message' : 'ai-message';
+  // Create avatar (visible on desktop, hidden on mobile via CSS)
+  const avatar = document.createElement('div');
+  avatar.className = role==='user' ? 'user-avatar' : 'ai-avatar';
+  avatar.textContent = role==='user' ? '👤' : '🤖';
   const mc = document.createElement('div'); mc.className='message-content';
   const mt = document.createElement('div'); mt.className='message-text';
   if(role==='ai'){
     try { mt.innerHTML = window.marked ? marked.parse(content) : content; } catch { mt.textContent = content; }
   } else { mt.textContent = content; }
   mc.appendChild(mt);
-  // Avatars removed for a cleaner, wider message area
-  wrapper.appendChild(mc);
+  if(role==='ai') { wrapper.appendChild(avatar); wrapper.appendChild(mc); }
+  else { wrapper.appendChild(mc); wrapper.appendChild(avatar); }
   container.appendChild(wrapper);
   if(role==='user'){ autoScrollEnabled = true; }
   if(autoScrollEnabled) container.scrollTop = container.scrollHeight;
   return mt; // bubble reference for streaming
 }
 
-function showTyping(){ if(qs('#ai-typing-indicator')) return; const container=qs('#chat-messages'); if(!container) return; const el=document.createElement('div'); el.className='ai-typing-message'; el.id='ai-typing-indicator'; el.innerHTML=`<div class="message-content"><div class="ai-typing-dots"><span></span><span></span><span></span></div></div>`; container.appendChild(el); if(autoScrollEnabled) container.scrollTop=container.scrollHeight; }
+function showTyping(){ if(qs('#ai-typing-indicator')) return; const container=qs('#chat-messages'); if(!container) return; const el=document.createElement('div'); el.className='ai-typing-message'; el.id='ai-typing-indicator'; el.innerHTML=`<div class="ai-avatar">🤖</div><div class="message-content"><div class="ai-typing-dots"><span></span><span></span><span></span></div></div>`; container.appendChild(el); if(autoScrollEnabled) container.scrollTop=container.scrollHeight; }
 function hideTyping(){ const t=qs('#ai-typing-indicator'); if(t) t.remove(); }
 
 // Textarea auto-resize & vertical centering identical logic to transcript variant

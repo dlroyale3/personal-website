@@ -263,6 +263,10 @@ html { scroll-behavior:smooth; }
   /* Ensure input and send button maintain intended size */
   #chat-input { min-height:46px; max-height:160px; padding:12px 18px; line-height:1.32; }
   .send-button { width:46px; height:46px; }
+  /* Hide avatars and widen message bubbles on mobile */
+  .user-avatar, .ai-avatar, .ai-typing-message .ai-avatar { display:none !important; }
+  .user-message, .ai-message { gap:0; }
+  .message-content, .ai-typing-message .message-content { max-width:100%; }
 }
 
 /* Grid cards */
@@ -281,10 +285,12 @@ html { scroll-behavior:smooth; }
 .chat-header { padding:16px 24px 14px; display:flex; align-items:center; justify-content:space-between; }
 .chat-container { flex:1; display:flex; flex-direction:column; min-height:0; }
 .chat-messages { flex:1; padding:22px 24px 30px; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:18px; }
-.user-message, .ai-message, .ai-typing-message { display:flex; align-items:flex-start; gap:0; animation:fadeIn .35s ease; }
+.user-message, .ai-message, .ai-typing-message { display:flex; align-items:flex-start; gap:10px; animation:fadeIn .35s ease; }
 .user-message { justify-content:flex-end; }
-.user-avatar, .ai-avatar { display:none !important; }
-.message-content { max-width:100%; display:flex; flex-direction:column; }
+.user-avatar, .ai-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:14px; color:#fff; border:2px solid rgba(255,255,255,.15); box-shadow:0 2px 6px rgba(0,0,0,.35); flex-shrink:0; }
+.user-avatar { background:#1d4ed8; }
+.ai-avatar { background:linear-gradient(145deg,#0f172a 0%,#2563eb 100%); }
+.message-content { max-width:78%; display:flex; flex-direction:column; }
 .message-text { padding:14px 18px; border-radius:18px; font-size:14px; line-height:1.6; word-wrap:break-word; box-shadow:0 1px 3px rgba(0,0,0,.25); }
 @media (max-width:780px){ .chat-single-container { padding:28px 16px 34px; } .chat-messages { padding:20px 18px 26px; } .chat-panel { height:calc(100vh - 64px - 28px - 34px); } }
 
@@ -327,6 +333,6 @@ html { scroll-behavior:smooth; }
   .chat-panel {
     max-height: none;
     height: calc(100vh - 64px - 20px - 24px);
-    height: calc(100dvh - 64px - 20px - 24px - 150px);
+    height: calc(100dvh - 64px - 20px - 24px - 90px);
   }
 }
