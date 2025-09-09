@@ -201,7 +201,9 @@ html { scroll-behavior:smooth; }
 
 /* Contact */
 .contact-inner { max-width:900px; }
-.contact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:34px; margin-top:32px; }
+.contact-inner { max-width:1200px; padding-left:10px; padding-right:10px; }
+.contact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(2275px,1fr)); gap:34px; margin-top:32px; }
+.contact-grid { display:grid; grid-template-columns:repeat(3, minmax(340px,1fr)); gap:32px; margin-top:32px; }
 .contact-item h3 { margin:0 0 6px; font-size:15px; color:#38bdf8; text-transform:uppercase; letter-spacing:.5px; }
 .contact-item p { margin:0; font-size:15px; }
 .contact-item a { color:#60a5fa; text-decoration:none; }
